@@ -29,22 +29,33 @@ public class RocketShip : MonoBehaviour
         float rotationSpeed = Time.deltaTime * rotationThrust;
         float thrustForce = Time.deltaTime * mainThrust;
 
+        Thrusting(thrustForce);
+        Rotating(rotationSpeed, thrustForce);
+    }
+
+    private void Thrusting(float thrustForce)
+    {
         if (Input.GetKey(KeyCode.W))
         {
-            if(!myAudioSource.isPlaying)
+            if (!myAudioSource.isPlaying)
             {
                 myAudioSource.Play();
-
-            }
-
-            else
-            {
-                myAudioSource.Stop();
             }
 
             myRigidBody.AddRelativeForce(Vector3.up * thrustForce);
             Debug.Log("Up");
         }
+
+        else
+        {
+            myAudioSource.Stop();
+        }
+    }
+
+    private void Rotating(float rotationSpeed, float thrustForce)
+    {
+
+        myRigidBody.freezeRotation = true;
 
         if (Input.GetKey(KeyCode.A))
         {
@@ -58,10 +69,17 @@ public class RocketShip : MonoBehaviour
             Debug.Log("Rotate -Z");
         }
 
+        myRigidBody.freezeRotation = false;
+
         if (Input.GetKey(KeyCode.S))
         {
             myRigidBody.AddRelativeForce(Vector3.down * thrustForce);
             Debug.Log("down");
         }
+    }
+
+    private void LateUpdate()
+    {
+        transform.localEulerAngles = new Vector3(0, 0, transform.localEulerAngles.z);
     }
 }
